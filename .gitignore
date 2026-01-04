@@ -29,6 +29,7 @@ celerybeat-schedule.db
 # Output files
 *.json
 !package.json
+!package-lock.json
 !tsconfig.json
 output/
 
