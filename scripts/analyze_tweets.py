@@ -22,11 +22,15 @@ from saas_finder.config import config
 
 def main():
     parser = argparse.ArgumentParser(description="Analyze tweets and extract SaaS ideas")
-    parser.add_argument("--limit", type=int, default=20, help="Max tweets to fetch")
+    parser.add_argument("--limit", type=int, default=20, help="Max tweets to fetch (capped at 100)")
     parser.add_argument("--query", type=str, default="$10k MRR", help="Search query")
-    parser.add_argument("--timeout", type=int, default=60, help="Timeout in seconds")
+    parser.add_argument("--timeout", type=int, default=60, help="Timeout in seconds (max 120)")
     parser.add_argument("--output", type=str, default="data/extracted_ideas.json", help="Output file")
     args = parser.parse_args()
+    
+    # SAFETY: Hard caps to prevent runaway costs
+    args.limit = min(args.limit, 100)  # Max 100 tweets
+    args.timeout = min(args.timeout, 120)  # Max 2 minutes
     
     # Get API token from config or env
     api_token = config.scraper.apify_api_token or os.environ.get("APIFY_API_TOKEN")
@@ -40,25 +44,26 @@ def main():
     
     print(f"Searching: '{args.query}' (limit: {args.limit}, timeout: {args.timeout}s)")
     
-    # Run search
+    # Run search with strict limits
     run_input = {
         "searchTerms": [args.query],
         "maxTweets": args.limit,
+        "maxItems": args.limit,  # Additional safeguard
         "sort": "Latest",
     }
     
     try:
         run = client.actor("apidojo/tweet-scraper").call(
             run_input=run_input,
-            timeout_secs=args.timeout
+            timeout_secs=args.timeout,
+            memory_mbytes=256,  # Limit memory to control costs
         )
         print(f"Run completed: {run['status']}")
         dataset_id = run["defaultDatasetId"]
     except Exception as e:
         print(f"Run error: {e}")
-        runs = list(client.actor("apidojo/tweet-scraper").runs().list().items)
-        if runs:
-            dataset_id = runs[0]["defaultDatasetId"]
+        print("NOT falling back to previous runs - this could be expensive!")
+        sys.exit(1)
             print(f"Using last run dataset: {dataset_id}")
         else:
             print("No runs found")
