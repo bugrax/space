@@ -240,7 +240,8 @@ const IdeaRow = ({
         idea.score_breakdown?.simplicity
       : idea.score;
   const verdict = getVerdict(totalScore);
-  const tweetUrl = idea.found_in_tweet || idea.tweet_url || "";
+  // tweet_url is the actual Twitter link, found_in_tweet is the tweet text
+  const tweetUrl = idea.tweet_url || "";
 
   return (
     <tr
