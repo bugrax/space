@@ -1,0 +1,135 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: saas_finder_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=saas_finder
+      - POSTGRES_PASSWORD=saas_finder_secret
+      - POSTGRES_DB=saas_finder
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U saas_finder -d saas_finder"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis - Message Broker & Result Backend
+  redis:
+    image: redis:7-alpine
+    container_name: saas_finder_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Celery Worker - Processes tasks
+  celery_worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: saas_finder_worker
+    command: celery -A saas_finder.celery_app worker --loglevel=info -Q default,twitter,scoring,maintenance
+    volumes:
+      - ..:/app
+      - ../data:/app/data
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://saas_finder:saas_finder_secret@postgres:5432/saas_finder
+      - PYTHONPATH=/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Celery Beat - Scheduler
+  celery_beat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: saas_finder_beat
+    command: celery -A saas_finder.celery_app beat --loglevel=info
+    volumes:
+      - ..:/app
+      - ../data:/app/data
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://saas_finder:saas_finder_secret@postgres:5432/saas_finder
+      - PYTHONPATH=/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      celery_worker:
+        condition: service_started
+    restart: unless-stopped
+
+  # Flower - Celery Monitoring
+  flower:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: saas_finder_flower
+    command: celery -A saas_finder.celery_app flower --port=5555
+    ports:
+      - "5555:5555"
+    volumes:
+      - ..:/app
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://saas_finder:saas_finder_secret@postgres:5432/saas_finder
+      - PYTHONPATH=/app
+    depends_on:
+      - redis
+      - celery_worker
+    restart: unless-stopped
+
+  # FastAPI Backend
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: saas_finder_api
+    command: uvicorn saas_finder.api:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - ..:/app
+      - ../config/accounts.txt:/app/config/accounts.txt
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://saas_finder:saas_finder_secret@postgres:5432/saas_finder
+      - PYTHONPATH=/app
+      - TWITTER_ACCOUNTS_FILE=/app/config/accounts.txt
+      - APIFY_API_TOKEN=${APIFY_API_TOKEN:-}
+      - ENABLE_TWSCRAPE=true
+      - ENABLE_APIFY=true
+      - ENABLE_SCWEET=false
+      - SCRAPE_INTERVAL_HOURS=4
+      - MAX_TWEETS_PER_QUERY=100
+      - RATE_LIMIT_DELAY=2.0
+      - MIN_MRR_THRESHOLD=500
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

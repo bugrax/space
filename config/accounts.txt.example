@@ -1,0 +1,27 @@
+# Twitter accounts for twscrape
+# ================================
+# 
+# Format: username:password:email:email_password
+# Or with cookies (more stable): username:password:email:email_password:cookies_json
+#
+# IMPORTANT:
+# - Use burner accounts, NOT your main account
+# - Add multiple accounts for better rate limiting
+# - Cookies method is more stable (no login required)
+#
+# Example entries:
+# myaccount1:mypassword1:email1@gmail.com:emailpass1
+# myaccount2:mypassword2:email2@gmail.com:emailpass2
+#
+# With cookies (recommended):
+# myaccount3:pass:email:emailpass:{"auth_token":"xxx","ct0":"yyy"}
+#
+# How to get cookies:
+# 1. Login to Twitter in your browser
+# 2. Open DevTools (F12) → Application → Cookies → twitter.com
+# 3. Copy "auth_token" and "ct0" values
+# 4. Format as JSON: {"auth_token":"your_token","ct0":"your_ct0"}
+#
+# Add your accounts below:
+# --------------------------
+

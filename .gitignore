@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+
+# Config with credentials (keep .example)
+config/accounts.txt
+
+# Database
+*.db
+data/
+
+# Celery
+celerybeat-schedule
+celerybeat-schedule.db
+
+# IDE
+.vscode/
+.idea/
+
+# Output files
+*.json
+!package.json
+!tsconfig.json
+output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Node.js
+web/node_modules/
+web/.next/
+web/out/
