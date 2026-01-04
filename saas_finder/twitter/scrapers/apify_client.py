@@ -79,11 +79,14 @@ class ApifyTwitterClient(BaseScraper):
             return
         
         # Prepare input for Apify actor
-        # Note: apidojo/tweet-scraper ignores maxTweets and fetches all available tweets
-        # We limit results client-side
+        # IMPORTANT: Set strict limits to prevent runaway costs
+        # Actor was running indefinitely without proper limits
+        safe_limit = min(limit, 200)  # Hard cap at 200 tweets per search
+        
         run_input = {
             "searchTerms": [query],
-            "maxTweets": min(limit, 500),  # Actor may ignore this but we try
+            "maxTweets": safe_limit,
+            "maxItems": safe_limit,  # Belt and suspenders
             "sort": "Latest",
         }
         
@@ -92,12 +95,12 @@ class ApifyTwitterClient(BaseScraper):
         if until:
             run_input["endDate"] = until
         
-        logger.info(f"Starting Apify search: '{query}' (limit: {limit})")
+        logger.info(f"Starting Apify search: '{query}' (limit: {safe_limit})")
         
         try:
-            # Run the actor with timeout
-            # Actor tends to over-fetch, so we use a reasonable timeout
-            timeout_secs = max(60, limit // 10 * 5)  # ~5 seconds per 10 tweets, min 60s
+            # Run the actor with STRICT timeout to prevent runaway costs
+            # Max 120 seconds - if it takes longer, something is wrong
+            timeout_secs = min(120, max(30, safe_limit // 10 * 5))
             
             loop = asyncio.get_event_loop()
             run = await loop.run_in_executor(
