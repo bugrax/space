@@ -1,0 +1,130 @@
+# Build Progress - Ticket #008
+# Split monolithic Dashboard page into modular components
+
+## Status: Ready for Implementation
+Created: 2026-01-05
+
+---
+
+## Summary
+The `web/src/app/page.tsx` file has grown to 785 lines containing 7 components
+that need to be extracted into separate modules for better maintainability.
+
+## Components to Extract
+- [x] Analyzed current file structure
+- [ ] StatCard (lines 99-129) - metric display card with icon
+- [x] ScoreRing (lines 131-178) - SVG circular progress indicator
+- [ ] TrafficBar (lines 180-213) - traffic source visualization
+- [ ] TrafficLegend (lines 456-476) - legend for traffic bar
+- [ ] IdeaRow (lines 223-349) - table row component for ideas
+- [ ] ScoreBreakdownPanel (lines 351-454) - sidebar panel with score details
+
+## Target Directory Structure
+```
+web/src/
+├── app/
+│   └── page.tsx          (refactored ~250 lines)
+├── components/
+│   ├── dashboard/
+│   │   ├── IdeaRow.tsx
+│   │   ├── ScoreBreakdownPanel.tsx
+│   │   └── index.ts
+│   └── ui/
+│       ├── ScoreRing.tsx
+│       ├── StatCard.tsx
+│       ├── TrafficBar.tsx
+│       ├── TrafficLegend.tsx
+│       └── index.ts
+├── types/
+│   ├── dashboard.ts
+│   └── index.ts
+└── lib/
+    ├── api.ts
+    └── utils.ts
+```
+
+## Implementation Phases
+
+### Phase 1: Setup Component Infrastructure
+- [x] 1.1 Create components directory structure
+- [x] 1.2 Create shared types module
+- [x] 1.3 Create shared utilities module
+
+### Phase 2: Extract UI Components
+- [x] 2.1 Extract ScoreRing component
+- [ ] 2.2 Extract StatCard component
+- [ ] 2.3 Extract TrafficBar component
+- [ ] 2.4 Extract TrafficLegend component
+- [ ] 2.5 Create UI components barrel export
+
+### Phase 3: Extract Dashboard-Specific Components
+- [ ] 3.1 Extract IdeaRow component
+- [ ] 3.2 Extract ScoreBreakdownPanel component
+- [ ] 3.3 Create dashboard components barrel export
+
+### Phase 4: Refactor Main Dashboard Page
+- [ ] 4.1 Refactor page.tsx to use extracted components
+- [ ] 4.2 Verify TypeScript path aliases
+
+### Phase 5: Validation and Testing
+- [ ] 5.1 Verify build passes
+- [ ] 5.2 Visual verification
+
+---
+
+## Progress Notes
+
+### 2026-01-05 - Plan Created
+- Analyzed page.tsx (785 lines, 7 components)
+- Created implementation plan with 5 phases, 14 subtasks
+- Ready to begin Phase 1
+
+### 2026-01-05 - Subtask 1.1 Completed
+- Created web/src/components/dashboard/ directory
+- Created web/src/components/ui/ directory
+- Added .gitkeep files to both directories
+- Committed changes (commit: 90ab379)
+
+### 2026-01-05 - Subtask 1.2 Completed
+- Created web/src/types/dashboard.ts with all dashboard interfaces:
+  - TrafficData: traffic source distribution data
+  - ScoreBreakdown: individual score components (traction, growth, traffic, simplicity)
+  - Engagement: social media engagement metrics
+  - Idea: complete SaaS idea data structure
+  - Stats: dashboard statistics and aggregated metrics
+- Created web/src/types/index.ts as barrel export
+- Added comprehensive JSDoc documentation for all types
+- All interfaces properly documented with field descriptions
+- Committed changes (commit: d7d0813)
+
+### 2026-01-05 - Subtask 1.3 Completed
+- Created web/src/lib/api.ts with API utilities:
+  - API_BASE_URL: configurable base URL for backend (uses NEXT_PUBLIC_API_URL env var)
+  - fetcher: SWR-compatible fetch function that automatically prepends base URL
+- Created web/src/lib/utils.ts with helper functions:
+  - getVerdict: determines score verdict/recommendation (STRONG BUILD, EXPLORING, CAUTION, SKIP)
+  - Verdict interface: type definition for verdict return value
+- Added comprehensive JSDoc documentation for all exports
+- Utilities maintain backward compatibility with existing page.tsx code
+- Committed changes (commit: 70692a7)
+
+Phase 1 (Setup Component Infrastructure) is now complete! ✓
+Ready to proceed with Phase 2 (Extract UI Components)
+
+### 2026-01-05 - Subtask 2.1 Completed
+- Created web/src/components/ui/ScoreRing.tsx
+- Extracted ScoreRing SVG circular progress indicator component
+- Component properties:
+  - score: number (0-100) - the score to display
+  - size?: number (default: 60) - the ring size in pixels
+- Color-coded visualization with score thresholds:
+  - >= 75: Green (#00FF88) - Strong/Excellent
+  - >= 50: Blue (#00D4FF) - Good/Exploring
+  - >= 30: Yellow (#FFB800) - Caution/Warning
+  - < 30: Red (#FF4757) - Poor/Skip
+- Added comprehensive JSDoc documentation
+- Uses existing CSS module styles (scoreRingContainer, scoreValue)
+- Includes "use client" directive for Next.js client-side rendering
+- Pure UI component with no business logic dependencies
+- Committed changes (commit: b2014cb)
+
