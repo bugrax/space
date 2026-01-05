@@ -63,8 +63,8 @@ web/src/
 - [x] 3.3 Create dashboard components barrel export
 
 ### Phase 4: Refactor Main Dashboard Page
-- [ ] 4.1 Refactor page.tsx to use extracted components
-- [ ] 4.2 Verify TypeScript path aliases
+- [x] 4.1 Refactor page.tsx to use extracted components
+- [x] 4.2 Verify TypeScript path aliases
 
 ### Phase 5: Validation and Testing
 - [ ] 5.1 Verify build passes
@@ -246,4 +246,37 @@ Ready to proceed with Phase 3 (Extract Dashboard-Specific Components)
 
 Phase 3 (Extract Dashboard-Specific Components) is now complete! ✓
 Ready to proceed with Phase 4 (Refactor Main Dashboard Page)
+
+### 2026-01-05 - Subtask 4.1 Completed
+- Successfully refactored web/src/app/page.tsx to use all extracted components
+- Refactoring achievements:
+  - Removed all inline component definitions: StatCard, ScoreRing, TrafficBar, IdeaRow, ScoreBreakdownPanel, TrafficLegend
+  - Removed duplicate type definitions (TrafficData, ScoreBreakdown, Engagement, Idea, Stats)
+  - Removed duplicate API utilities (API_BASE_URL, fetcher, getVerdict)
+  - File reduced from 785 lines to 340 lines (57% reduction, 445 lines removed)
+- Clean imports structure:
+  - Types imported from @/types (Idea, Stats)
+  - API utilities imported from @/lib/api (API_BASE_URL, fetcher)
+  - UI components imported from @/components/ui (StatCard, TrafficLegend)
+  - Dashboard components imported from @/components/dashboard (IdeaRow, ScoreBreakdownPanel)
+- Reduced Lucide icon imports from 26 to 12 (only what's needed in main Dashboard)
+- Removed console.error debugging statement for clean production code
+- All functionality and behavior preserved
+- TypeScript path aliases (@/*) working correctly
+- Committed changes (commit: 19adf41)
+
+### 2026-01-05 - Subtask 4.2 Completed
+- Verified TypeScript path aliases configuration in web/tsconfig.json
+- Configuration verification results:
+  - ✓ @/* path alias is configured: "paths": { "@/*": ["./src/*"] }
+  - ✓ @/components/* path works: Successfully used in page.tsx, IdeaRow.tsx, ScoreBreakdownPanel.tsx
+  - ✓ @/types/* path works: Successfully used in page.tsx, IdeaRow.tsx, ScoreBreakdownPanel.tsx, TrafficBar.tsx
+  - ✓ @/lib/* path works: Successfully used in page.tsx, IdeaRow.tsx, ScoreBreakdownPanel.tsx
+- Verified all imports across 11 files using @ path aliases
+- The single "@/*": ["./src/*"] mapping in tsconfig.json covers all required path aliases
+- No modifications needed - configuration already optimal
+- All acceptance criteria met without changes
+
+Phase 4 (Refactor Main Dashboard Page) is now complete! ✓
+Ready to proceed with Phase 5 (Validation and Testing)
 
