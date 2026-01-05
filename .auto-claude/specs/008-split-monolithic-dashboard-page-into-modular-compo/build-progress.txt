@@ -12,7 +12,7 @@ that need to be extracted into separate modules for better maintainability.
 
 ## Components to Extract
 - [x] Analyzed current file structure
-- [ ] StatCard (lines 99-129) - metric display card with icon
+- [x] StatCard (lines 99-129) - metric display card with icon
 - [x] ScoreRing (lines 131-178) - SVG circular progress indicator
 - [ ] TrafficBar (lines 180-213) - traffic source visualization
 - [ ] TrafficLegend (lines 456-476) - legend for traffic bar
@@ -52,7 +52,7 @@ web/src/
 
 ### Phase 2: Extract UI Components
 - [x] 2.1 Extract ScoreRing component
-- [ ] 2.2 Extract StatCard component
+- [x] 2.2 Extract StatCard component
 - [ ] 2.3 Extract TrafficBar component
 - [ ] 2.4 Extract TrafficLegend component
 - [ ] 2.5 Create UI components barrel export
@@ -127,4 +127,25 @@ Ready to proceed with Phase 2 (Extract UI Components)
 - Includes "use client" directive for Next.js client-side rendering
 - Pure UI component with no business logic dependencies
 - Committed changes (commit: b2014cb)
+
+### 2026-01-05 - Subtask 2.2 Completed
+- Created web/src/components/ui/StatCard.tsx
+- Extracted StatCard metric display component
+- Component properties:
+  - label: string - the stat label/title
+  - value: string - the main value to display
+  - change: string - change indicator or secondary text
+  - icon: LucideIcon - Lucide icon component to display
+  - color: string - color theme (hex color)
+- Displays key metrics with visual effects:
+  - Colored icon background with 15% opacity
+  - Main value and label display
+  - Color-coded change indicator
+  - Subtle glow effect on the card
+- Added comprehensive JSDoc documentation with usage examples
+- Uses existing CSS module styles (statCard, statIcon, statContent, etc.)
+- Includes "use client" directive for Next.js client-side rendering
+- Uses LucideIcon type for proper icon prop typing
+- Follows same pattern as ScoreRing component
+- Committed changes (commit: 4e848be)
 
