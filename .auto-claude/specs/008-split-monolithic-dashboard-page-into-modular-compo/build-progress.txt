@@ -16,7 +16,7 @@ that need to be extracted into separate modules for better maintainability.
 - [x] ScoreRing (lines 131-178) - SVG circular progress indicator
 - [x] TrafficBar (lines 180-213) - traffic source visualization
 - [x] TrafficLegend (lines 456-476) - legend for traffic bar
-- [ ] IdeaRow (lines 223-349) - table row component for ideas
+- [x] IdeaRow (lines 223-349) - table row component for ideas
 - [ ] ScoreBreakdownPanel (lines 351-454) - sidebar panel with score details
 
 ## Target Directory Structure
@@ -58,7 +58,7 @@ web/src/
 - [x] 2.5 Create UI components barrel export
 
 ### Phase 3: Extract Dashboard-Specific Components
-- [ ] 3.1 Extract IdeaRow component
+- [x] 3.1 Extract IdeaRow component
 - [ ] 3.2 Extract ScoreBreakdownPanel component
 - [ ] 3.3 Create dashboard components barrel export
 
@@ -202,4 +202,33 @@ Ready to proceed with Phase 2 (Extract UI Components)
 
 Phase 2 (Extract UI Components) is now complete! ✓
 Ready to proceed with Phase 3 (Extract Dashboard-Specific Components)
+
+### 2026-01-05 - Subtask 3.1 Completed
+- Created web/src/components/dashboard/IdeaRow.tsx
+- Extracted the IdeaRow table row component that displays idea data with actions
+- Component properties:
+  - idea: Idea - the complete SaaS idea data to display
+  - isSelected: boolean - whether this row is currently selected
+  - onSelect: (id: number) => void - callback when row is clicked
+  - onFavorite: (id: number) => void - callback when favorite button is clicked
+- Component displays comprehensive idea information in a table row:
+  - Product name, domain/URL with Globe icon
+  - Category badge
+  - Reported Monthly Recurring Revenue (MRR)
+  - Score visualization using ScoreRing component
+  - Color-coded verdict badge (STRONG BUILD, EXPLORING, CAUTION, SKIP)
+  - Traffic source distribution using TrafficBar component
+  - Author information with Twitter icon
+  - Date found (formatted as locale date string)
+  - Action buttons: External link, Tweet link, and Favorite star
+- Imports ScoreRing and TrafficBar from @/components/ui
+- Imports Idea type from @/types/dashboard
+- Imports getVerdict utility from @/lib/utils
+- All action buttons properly stop event propagation to prevent row selection
+- Favorite button shows filled star when idea is favorited
+- Added comprehensive JSDoc documentation with usage examples
+- Uses existing CSS module styles (ideaRow, ideaNameCell, categoryBadge, etc.)
+- Includes "use client" directive for Next.js client-side rendering
+- Component is 175 lines, well within the 150-line maintainability target
+- Committed changes (commit: d364c32)
 
