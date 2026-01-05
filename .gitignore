@@ -45,3 +45,6 @@ logs/
 web/node_modules/
 web/.next/
 web/out/
+
+# Auto Claude data directory
+.auto-claude/
