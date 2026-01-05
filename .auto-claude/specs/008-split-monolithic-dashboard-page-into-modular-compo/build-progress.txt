@@ -17,7 +17,7 @@ that need to be extracted into separate modules for better maintainability.
 - [x] TrafficBar (lines 180-213) - traffic source visualization
 - [x] TrafficLegend (lines 456-476) - legend for traffic bar
 - [x] IdeaRow (lines 223-349) - table row component for ideas
-- [ ] ScoreBreakdownPanel (lines 351-454) - sidebar panel with score details
+- [x] ScoreBreakdownPanel (lines 351-454) - sidebar panel with score details
 
 ## Target Directory Structure
 ```
@@ -59,8 +59,8 @@ web/src/
 
 ### Phase 3: Extract Dashboard-Specific Components
 - [x] 3.1 Extract IdeaRow component
-- [ ] 3.2 Extract ScoreBreakdownPanel component
-- [ ] 3.3 Create dashboard components barrel export
+- [x] 3.2 Extract ScoreBreakdownPanel component
+- [x] 3.3 Create dashboard components barrel export
 
 ### Phase 4: Refactor Main Dashboard Page
 - [ ] 4.1 Refactor page.tsx to use extracted components
@@ -231,4 +231,19 @@ Ready to proceed with Phase 3 (Extract Dashboard-Specific Components)
 - Includes "use client" directive for Next.js client-side rendering
 - Component is 175 lines, well within the 150-line maintainability target
 - Committed changes (commit: d364c32)
+
+### 2026-01-05 - Subtask 3.3 Completed
+- Created web/src/components/dashboard/index.ts as barrel export
+- Provides centralized export point for all dashboard-specific components
+- Exports all dashboard components:
+  - IdeaRow component and IdeaRowProps type
+  - ScoreBreakdownPanel component and ScoreBreakdownPanelProps type
+- Enables clean imports via '@/components/dashboard'
+- Added JSDoc documentation explaining the purpose
+- Supports TypeScript with proper type exports
+- Follows the same pattern as UI components barrel export
+- Committed changes (commit: 1583067)
+
+Phase 3 (Extract Dashboard-Specific Components) is now complete! ✓
+Ready to proceed with Phase 4 (Refactor Main Dashboard Page)
 
